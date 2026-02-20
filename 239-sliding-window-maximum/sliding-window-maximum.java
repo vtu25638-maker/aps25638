@@ -1,36 +1,37 @@
+import java.util.*;
+
 class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
-        Stack<Integer> st = new Stack<>();
-        int n =nums.length;
-        int []ans =new int [n-k+1];
-        int []nge =new int[n];
-        int z=0;
-        st.push(n-1);
-        nge[n-1]=n;
-        for(int i =n-2;i>=0;i--){
-            while(st.size()>0 && nums[i]>nums[st.peek()])
-            
-                st.pop();
-            
-            if(st.size()==0)nge[i]=n;
-            else nge[i]=st.peek();
-            st.push(i);
-            
-        }
-        int j=0;
-        for(int i=0;i<n-k+1;i++){
-            if(j>=i+k)j=i;
-            int max=nums[j];
-            while(j<i+k){
-                   max=nums[j];
-                   j=nge[j];
 
+        Map<Integer, Integer> mp = new HashMap<>();
+        int[] ans = new int[nums.length - (k - 1)];
+
+       
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        int j = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+
+            mp.put(nums[i], mp.getOrDefault(nums[i], 0) + 1);
+            pq.add(nums[i]);
+
+            if (i - j + 1 == k) {
+
+              
+                while (!pq.isEmpty() && mp.getOrDefault(pq.peek(), 0) == 0) {
+                    pq.poll();
+                }
+
+                int ele = pq.peek();
+                ans[j] = ele;
+
+                
+                mp.put(nums[j], mp.get(nums[j]) - 1);
+
+                j++;
             }
-            ans[z++]=max;
-
         }
         return ans;
-        
-        
     }
 }
